@@ -3,9 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"net/http"
-
-	"github.com/marwolaethblack/webdev/express"
 )
 
 type Node struct {
@@ -20,24 +17,25 @@ type Tree struct {
 	Size int
 }
 
+//NewTree creates a new Radix Tree/Trie
 func NewTree() *Tree {
 	tree := &Tree{Root: &Node{0, map[rune]*Node{}, false, 0}, Size: 0}
 	return tree
 }
 
-func (t *Tree) AddNode(node *Node, Value rune) *Node {
+//AddNode adds a node to a parent node within the tree and returns a pointer to the added node
+//If the parent node already has a child node with the given value it returns that child node instead
+func (t *Tree) AddNode(parentNode *Node, Value rune) *Node {
 
-	fmt.Println(node.Children[Value])
-
-	if node.Children[Value] == nil {
-		newnode := &Node{Value, map[rune]*Node{}, true, node.Depth + 1}
-		node.Children[Value] = newnode
+	if parentNode.Children[Value] == nil {
+		newChildNode := &Node{Value, map[rune]*Node{}, true, parentNode.Depth + 1}
+		parentNode.Children[Value] = newChildNode
 		t.Size++
-		node.End = false
-		return newnode
+		parentNode.End = false
+		return newChildNode
 	}
 
-	return node.Children[Value]
+	return parentNode.Children[Value]
 
 }
 
@@ -48,22 +46,42 @@ func (t *Tree) AddWord(word string) {
 	}
 }
 
+func (t *Tree) SearchWord(word string) string {
+
+	match := ""
+
+	currentNode := t.Root
+	for _, letter := range word {
+		currentNode = currentNode.Children[letter]
+		if currentNode == nil {
+			return match
+		}
+
+		match += string(currentNode.Value)
+
+	}
+
+	return match
+}
+
 func main() {
 	tree := NewTree()
 	word := "hello"
 
 	tree.AddWord(word)
+	tree.AddWord(word)
+	fmt.Println(tree.SearchWord("help"))
 
 	j, _ := json.Marshal(tree)
 	fmt.Println(string(j))
 
-	var app express.App
+	// var app express.App
 
-	h := func(w http.ResponseWriter, req *http.Request, stop func(message string)) {
-		express.GzipJSON(w, tree)
-	}
+	// h := func(w http.ResponseWriter, req *http.Request, stop func(message string)) {
+	// 	express.GzipJSON(w, tree)
+	// }
 
-	app.Get("/", h)
+	// app.Get("/", h)
 
-	app.Run(":8080")
+	// app.Run(":8080")
 }
