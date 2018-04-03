@@ -1,9 +1,4 @@
-package main
-
-import (
-	"encoding/json"
-	"fmt"
-)
+package simpletrie
 
 type Node struct {
 	Value    rune
@@ -19,7 +14,10 @@ type Tree struct {
 
 //NewTree creates a new Radix Tree/Trie
 func NewTree() *Tree {
-	tree := &Tree{Root: &Node{0, map[rune]*Node{}, false, 0}, Size: 0}
+	tree := &Tree{
+		Root: &Node{0, map[rune]*Node{}, false, 0},
+		Size: 0,
+	}
 	return tree
 }
 
@@ -39,6 +37,7 @@ func (t *Tree) AddNode(parentNode *Node, Value rune) *Node {
 
 }
 
+//AddWord adds a word to the tree by adding a node of each character if it doesnt exist
 func (t *Tree) AddWord(word string) {
 	currentNode := t.Root
 	for _, letter := range word {
@@ -46,8 +45,8 @@ func (t *Tree) AddWord(word string) {
 	}
 }
 
-//SearchClosestMatch traverses the tree and finds the closest match to the input within the tree
-func (t *Tree) SearchClosestMatch(word string) string {
+//ClosestMatch traverses the tree and finds the closest match to the input within the tree
+func (t *Tree) ClosestMatch(word string) string {
 
 	match := ""
 
@@ -65,25 +64,25 @@ func (t *Tree) SearchClosestMatch(word string) string {
 	return match
 }
 
-func main() {
-	tree := NewTree()
+// func main() {
+// 	tree := NewTree()
 
-	tree.AddWord("Hello")
-	tree.AddWord("help")
-	tree.AddWord("dolphin")
-	tree.AddWord("hell")
-	fmt.Println(tree.SearchClosestMatch("dolp"))
+// 	tree.AddWord("Hello")
+// 	tree.AddWord("help")
+// 	tree.AddWord("dolphin")
+// 	tree.AddWord("hell")
+// 	fmt.Println(tree.ClosestMatch("dolp"))
 
-	j, _ := json.Marshal(tree)
-	fmt.Println(string(j))
+// 	j, _ := json.Marshal(tree)
+// 	fmt.Println(string(j))
 
-	// var app express.App
+// 	var app express.App
 
-	// h := func(w http.ResponseWriter, req *http.Request, stop func(message string)) {
-	// 	express.GzipJSON(w, tree)
-	// }
+// 	h := func(w http.ResponseWriter, req *http.Request, stop func(message string)) {
+// 		express.GzipJSON(w, tree)
+// 	}
 
-	// app.Get("/", h)
+// 	app.Get("/", h)
 
-	// app.Run(":8080")
-}
+// 	app.Run(":8080")
+// }
