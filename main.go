@@ -46,7 +46,8 @@ func (t *Tree) AddWord(word string) {
 	}
 }
 
-func (t *Tree) SearchWord(word string) string {
+//SearchClosestMatch traverses the tree and finds the closest match to the input within the tree
+func (t *Tree) SearchClosestMatch(word string) string {
 
 	match := ""
 
@@ -66,11 +67,12 @@ func (t *Tree) SearchWord(word string) string {
 
 func main() {
 	tree := NewTree()
-	word := "hello"
 
-	tree.AddWord(word)
-	tree.AddWord(word)
-	fmt.Println(tree.SearchWord("help"))
+	tree.AddWord("Hello")
+	tree.AddWord("help")
+	tree.AddWord("dolphin")
+	tree.AddWord("hell")
+	fmt.Println(tree.SearchClosestMatch("dolp"))
 
 	j, _ := json.Marshal(tree)
 	fmt.Println(string(j))
